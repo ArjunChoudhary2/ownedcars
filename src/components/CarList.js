@@ -1,0 +1,54 @@
+import { useSelector, useDispatch } from "react-redux";
+import { removeCar } from "../store";
+
+function CarList() {
+  const dispatch = useDispatch();
+
+  const {cars, name} = useSelector(({ form, cars: { data, searchTerm } }) => {
+    const filteredCars=  data.filter((car) =>
+      car.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return { 
+      cars: filteredCars,
+      name : form.name
+    }
+  });
+
+  const handleCarDelete = (car) => {
+    dispatch(removeCar(car.id));
+  };
+
+  console.log(cars);
+
+  const renderedCars = cars.map((car) => {
+
+    const bold = name && car.name.toLowerCase().includes(name.toLowerCase());
+
+    return (
+      <div key={cars.id} className={`panel ${bold && 'bold'}`}>
+        <p>
+          {car.name} - Rs.{car.cost}
+        </p>
+        <button
+          className="button"
+          onClick={() => {
+            handleCarDelete(car);
+          }}
+        >
+          {" "}
+          Delete{" "}
+        </button>
+      </div>
+    );
+  });
+
+  return (
+    <div className="car-list">
+      {renderedCars}
+      <hr />
+    </div>
+  );
+}
+
+export default CarList;
